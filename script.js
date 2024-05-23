@@ -1,8 +1,12 @@
 var player1;
 var player2;
+var speed
 
 var bgImg;
 
+var gameOver = false;
+var Starting  = true;
+var Opening = true;
 function preload() {
   bgImg = loadImage("bg.jpg");
 }
@@ -23,7 +27,8 @@ class Fighter { 
     this.width = 50;    
     this.height = 100;   
     this.color = color;    
-    this.health = 100;  
+    this.health = 100; 
+    this.speed = 5;
   }
 
   draw() {
@@ -34,86 +39,102 @@ class Fighter { 
 
   moveLeft() {    
     this.x -= 5;
-
+    if (this.x < 0){ 
+      this.x = 0;
+    }
   }
   moveRight() {    
-    this.x += 5; 
-
+    if (this.x < width - this.width ){ 
+      this.x += 5; 
+    }
   }
-
   attack(opponent) {    
-    if (this.x + this.width >= opponent.x && this.x <= opponent.x + opponent.width) {      
-  opponent.health -= 10;   
+    if (this.x + this.width >= opponent.x && this.x <= opponent.x + opponent.width) {    
+
+      if (opponent.health > 0) {
+        opponent.health -= 10;   
+      } else {
+        gameOver = true;
+      }
     }  
    }
 
 }
 
-function startGame() { 
-  console.log("Starting the game...");
-}
 function options() {  
   console.log("Opening options menu...");
-}
-function exit() {  
-  console.log("Exiting the game...");
 }
 
 function draw() {   
   background(bgImg);    
 
-  if (keyIsPressed) {
-    if (key == "a") {
-      player1.moveLeft();
-    }
-    if (key == "d") {
-      player1.moveRight();
-    }
-    if (keyCode == LEFT_ARROW) {
-      player2.moveLeft();
-    }
-    if (keyCode == RIGHT_ARROW) {
-      player2.moveRight();
-    }
+  if (Starting) {
+    fill("pink");    
+    textSize(34);    
+    text("Press Enter to start", width / 2 - 120, height / 2);    
   }
+  
+  if (gameOver) {
 
-  player1.draw();  
-  player2.draw(); 
+    fill("white");    
+    textSize(32);    
+    text("Game Over", width / 2 - 80, height / 2);    
+    
+  } else {
 
-  stroke("black");
-  fill("black");
-  strokeWeight(1);
-  rect(10, 10, 100, 20);
-  fill("lightgreen");
-  rect(10, 10, player1.health, 20);
-
-  stroke("black");
-  fill("black");
-  strokeWeight(1);
-  rect(680, 10, 100, 20);
-  fill("lightgreen");
-  rect(680, 10, player2.health, 20);
-
-  stroke("black");
-  fill("black");
-  strokeWeight(1);
-  rect(10, 20, 100, 20);
-  fill("lightblue");
-  rect(10, 20, player1.health, 20);
-
-  stroke("black");
-  fill("black");
-  strokeWeight(1);
-  rect(680, 20, 100, 20);
-  fill("lightblue");
-  rect(680, 20, player2.health, 20);
-
+    if (keyIsPressed) {
+      if (key == "a") {
+        player1.moveLeft();
+      }
+      if (key == "d") {
+        player1.moveRight();
+      }
+      if (keyCode == LEFT_ARROW) {
+        player2.moveLeft();
+      }
+      if (keyCode == RIGHT_ARROW) {
+        player2.moveRight();
+      }
+    }
+  
+    player1.draw();  
+    player2.draw(); 
+  
+    stroke("black");
+    fill("black");
+    strokeWeight(1);
+    rect(10, 10, 100, 20);
+    fill("lightgreen");
+    rect(10, 10, player1.health, 20);
+  
+    stroke("black");
+    fill("black");
+    strokeWeight(1);
+    rect(680, 10, 100, 20);
+    fill("lightgreen");
+    rect(680, 10, player2.health, 20);
+    
+    stroke("black");
+    fill("black");
+    strokeWeight(1);
+    rect(380, 10, 50, 50);
+    fill("lightgreen");
+   
+    stroke("white");
+    fill("white");
+    strokeWeight(1);
+    rect(400, 30, 10, 10);
+    fill("lightgreen");
+  }
+  
 }
 
-// document.addEventListener('keyup', (event) => {  
-// if (event.key === 's') {    
-//   player1.attack(player2);  
-// } else if (event.key === 'ArrowDown') {    
-// player2.attack(player1);  
-//  }
-// });
+ document.addEventListener('keyup', (event) => {  
+ if (event.key === 's'){    
+   player1.attack(player2);  
+ } else if (event.key === 'ArrowDown'){
+ player2.attack(player1);  
+  } 
+   else if (event.key === 'Enter'){
+     Starting = false; }
+}) 
